@@ -1,45 +1,37 @@
-import { useState } from "react";
-import { apiFetch } from "../api/client";
-import { useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
 
-export default function Login() {
+function Login() {
   const [empId, setEmpId] = useState("");
   const [dob, setDob] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  async function handleLogin(e) {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault(); // 🚨 REQUIRED
+
     try {
-      const res = await apiFetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({
-          emp_id: empId,
-          dob
-        })
-      });
-
-      localStorage.setItem("token", res.token);
-
-      if (res.forcePasswordChange) {
-        navigate("/force-password-change");
-      } else {
-        navigate("/dashboard");
-      }
+      setError("");
+      await login(empId, dob);
+      alert("Login success");
     } catch (err) {
-      setError(err.message || "Login failed");
+      setError(err.message);
     }
-  }
+  };
 
   return (
-    <>
-      <h1>Employee Login</h1>
-      <form onSubmit={handleLogin}>
-        <input placeholder="Emp ID" onChange={e => setEmpId(e.target.value)} />
-        <input placeholder="DOB (DDMMYYYY)" onChange={e => setDob(e.target.value)} />
-        <button type="submit">Login</button>
-      </form>
+    <form onSubmit={handleLogin}>
+      <input
+        value={empId}
+        onChange={(e) => setEmpId(e.target.value)}
+        placeholder="Employee ID"
+      />
+      <input
+        value={dob}
+        onChange={(e) => setDob(e.target.value)}
+        placeholder="DDMMYYYY"
+      />
+      <button type="submit">Login</button>
+
       {error && <p style={{ color: "red" }}>{error}</p>}
-    </>
+    </form>
   );
 }
