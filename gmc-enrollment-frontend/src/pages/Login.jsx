@@ -7,9 +7,12 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // 🔴 REQUIRED
+
+    setError("");
+
     try {
-      await login(empId, dob);
+      await login(String(empId), String(dob));
       alert("Login success");
     } catch (err) {
       setError(err.message);
@@ -18,9 +21,22 @@ export default function Login() {
 
   return (
     <form onSubmit={handleLogin}>
-      <input value={empId} onChange={(e) => setEmpId(e.target.value)} />
-      <input value={dob} onChange={(e) => setDob(e.target.value)} />
+      <input
+        type="text"
+        placeholder="Employee ID"
+        value={empId}
+        onChange={(e) => setEmpId(e.target.value)}
+      />
+
+      <input
+        type="text"
+        placeholder="DOB (DDMMYYYY)"
+        value={dob}
+        onChange={(e) => setDob(e.target.value)}
+      />
+
       <button type="submit">Login</button>
+
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );

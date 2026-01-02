@@ -13,9 +13,9 @@ export async function login(emp_id, dob) {
   });
 
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || "Login failed");
+    const text = await res.text();
+    throw new Error(text || "Login failed");
   }
 
-  return res.json(); // backend may return token or empty
+  return res.json();
 }
